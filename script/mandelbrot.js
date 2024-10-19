@@ -1,8 +1,8 @@
 const cvs = document.querySelector("canvas"),
 ctx = cvs.getContext("2d");
 
-const WIDTH = Math.round(innerWidth),
-HEIGHT = Math.round(innerHeight);
+const WIDTH = Math.round(innerWidth / 2),
+HEIGHT = Math.round(innerHeight / 2);
 let RE_START = -2,
 RE_END = 1,
 IM_START = -1,
@@ -121,19 +121,7 @@ function mandelbrot(c, maxiters = -1) {
 
 let oldpixels = []
 
-function draw() {
-    if(oldpixels != pixels) {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT)
-        for(let x = 0; x < WIDTH; x++) {
-            for(let y = 0; y < HEIGHT; y++) {
-                ctx.fillStyle = pixels[y][x]
-                ctx.fillRect(x, y, 1, 1)
-            }
-        }
-        oldpixels = [...pixels]
-    }
-    hasZoomed = false
-}
+function draw() {}
 
 function update() {
     MAXITERS++
@@ -157,12 +145,15 @@ function update() {
             m = mandelbrot(c, MAXITERS)
             hue = 360-((m * 360) / MAXITERS)
             rgbcolor = HSVtoRGB(hue + defhue, 255, hue/360)
-            pixels[y][x] = rgbcolor
+            ctx.fillStyle = rgbcolor
+            ctx.fillRect(x, y, 1, 1)
         }
     }
+    hasZoomed = false
 }
 
-document.addEventListener("mousewheel", e => {
+addEventListener("wheel", e => {
+    console.log(hasZoomed)
     if(!hasZoomed) {
         zoomSpeed = Math.abs(e.deltaY);
         if(e.deltaY > 0) {
